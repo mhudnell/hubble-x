@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
-const tests = require('./test_suite.js');
+// const tests = require('./test_suite.js');
+const tests = require('./tests.js');
 
 app.use(express.static('/Users/mhudnell/dev/viz_reg/client/build'));
 app.get('*', function (req, res) {
@@ -11,6 +12,6 @@ app.get('*', function (req, res) {
 var server = app.listen(4000);
 
 (async () => {
-  await tests.testOne('AccordionGroup');
+  await tests.testAll();
   await server.close();
 })();

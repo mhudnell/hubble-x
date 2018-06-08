@@ -1,5 +1,5 @@
 
-const testSuite = require('./test_suite.js');
+const testSuite = require('./viz_reg.js');
 
 // write component tests here, can specify screenshot size
 const tests = {

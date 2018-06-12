@@ -5,8 +5,8 @@ const express = require('express'),
 const fs = require('fs'),
       PNG = require('pngjs').PNG,
       pixelmatch = require('pixelmatch'),
-      puppeteer = require('puppeteer');
-      // sharedComponents = require('../client/src/testComponentsNames.js');
+      puppeteer = require('puppeteer'),
+      chalk = require('chalk');
 
 const tests = require('./tests.js');
 
@@ -27,8 +27,7 @@ const defaultClipOpts = {
 /*
 *   name: must refer to the end of the url of the page you want to test (e.g. localhost:4000/c/{name})
 */
-async function testOne(name, clip=defaultClipOpts) {
-  console.log("Testing " + name + " . . ...");
+async function diffTest(name, clip=defaultClipOpts) {
   const browser = await puppeteer.launch(defaultBrowserOpts);
   const page = await browser.newPage();
 
@@ -64,33 +63,59 @@ async function testOne(name, clip=defaultClipOpts) {
     var diff = new PNG({width: imgExpected.width, height: imgExpected.height});
 
     var numMismatch = pixelmatch(imgExpected.data, imgActual.data, diff.data, imgExpected.width, imgExpected.height, {threshold: 0.1});
-    numMismatch ? console.log("TEST \x1b[31m%s\x1b[0m", "FAILED") : console.log("TEST \x1b[32m%s\x1b[0m", "PASSED");
-    console.log("numMismatch: " + numMismatch + " pixels out of " + (clip.width * clip.height));
-    console.log("percMismatch: " + numMismatch * 100 / (clip.width * clip.height) + " %\n");
 
     diff.pack().pipe(fs.createWriteStream('screenshots/diff/' + name + '.png'));
     return numMismatch;
   };
 
   var numMismatch = await doneReading();
+  var numTotal = clip.width * clip.height;
 
-  return numMismatch;
+  return {numMismatch, numTotal};
 }
 
 async function preTestOne(name){
   if(!tests[name]){ console.log('test doesnt exist'); return; }
 
   if(tests[name].clip){
-    await testOne(name, tests[name].clip);
+    return await diffTest(name, tests[name].clip);
   } else {
-    await testOne(name);
+    return await diffTest(name);
   }
 }
 
-async function testAll(){
-  for(key in tests){
-    await preTestOne(key);
+async function logTestOne(name){
+  console.log("Test [1/1]: " + chalk.bold.gray(name));
+  process.stdout.write(" ===> ");
+  var {numMismatch, numTotal} = await preTestOne(name);
+  if(numMismatch){
+    process.stdout.write(chalk.bold.red("FAILED"));
+    process.stdout.write(": " + numMismatch + "/" + numTotal + " (" + ((numMismatch/numTotal) * 100).toFixed(2) + "%) pixels differ\n");
+  } else {
+    console.log(chalk.bold.green("PASSED"));
   }
+  process.stdout.write("\n");
+}
+
+async function logTestAll(){
+  var testCurr = 0,
+      testsPassed = 0,
+      testsTotal = Object.keys(tests).length;
+
+  for(key in tests){
+    console.log("Test [" + (++testCurr) + "/" + testsTotal + "]: " + chalk.bold.gray(key));
+    process.stdout.write(" ===> ");
+    var {numMismatch, numTotal} = await preTestOne(key);
+    if(numMismatch){
+      process.stdout.write(chalk.bold.red("FAILED"));
+      process.stdout.write(": " + numMismatch + "/" + numTotal + " (" + ((numMismatch/numTotal) * 100).toFixed(2) + "%) pixels differ\n");
+    } else {
+      console.log(chalk.bold.green("PASSED"));
+      testsPassed++;
+    }
+  }
+
+  console.log("Complete: [" + testsPassed + "/" + testsTotal + "] tests passed.\n");
 }
 
 module.exports = async function(testName=undefined){
@@ -106,9 +131,9 @@ module.exports = async function(testName=undefined){
   (async () => {
 
     if(typeof testName === 'undefined') {
-      await testAll();
+      await logTestAll();
     } else {
-      await preTestOne(testName);
+      await logTestOne(testName);
     }
     
     await server.close();

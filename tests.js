@@ -1,22 +1,11 @@
 
-const testSuite = require('./viz_reg.js');
-
-// write component tests here, can specify screenshot size
+/*
+*   write component tests here, can specify screenshot size
+*   key must match React component name in 'client/src/testComponents.js` (this name is used in the url we navigate to)
+*/
 const tests = {
-  Accordion: async () => await testSuite.testOne('Accordion'),
-  AccordionGroup: async () => await testSuite.testOne('AccordionGroup', clip={x:0, y:0, width:800, height:750})
+  Accordion: {},
+  AccordionGroup: { clip: {x:0, y:0, width:800, height:750} },
 }
 
-
-
-module.exports = {
-  testOne: async function(name) {
-    await tests[name]();
-  },
-
-  testAll: async function() {
-    for(key in tests){
-      await tests[key]();
-    }
-  }
-}
+module.exports = tests;

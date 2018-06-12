@@ -1,8 +1,12 @@
 {
-  "name": "server",
+  "name": "vizreg",
   "version": "1.0.0",
   "description": "",
-  "main": "puppeteer_script.js",
+  "preferGlobal": true,
+  "bin": {
+    "vizreg": "./vizreg.js"
+  },
+  "main": "start_script.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,6 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "commander": "^2.15.1",
     "express": "^4.16.3",
     "pixelmatch": "^4.0.2",
     "puppeteer": "^1.4.0"

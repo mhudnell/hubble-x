@@ -27,9 +27,7 @@ const defaultClipOpts = {
 /*
 *   name: must refer to the end of the url of the page you want to test (e.g. localhost:4000/c/{name})
 */
-async function diffTest(name, clip=defaultClipOpts) {
-  const browser = await puppeteer.launch(defaultBrowserOpts);
-  const page = await browser.newPage();
+async function diffTest(name, browser, page, clip=defaultClipOpts) {
 
   await page.goto('http://localhost:4000/c/' + name);
 
@@ -40,7 +38,7 @@ async function diffTest(name, clip=defaultClipOpts) {
   }
   await page.screenshot({ path: 'screenshots/actual/' + name + '.png',
                           clip: clip });
-  await browser.close();
+  // await browser.close();
 
   // load pngs into variables
   var imgExpected = fs.createReadStream('screenshots/expected/' + name + '.png').pipe(new PNG()),
@@ -74,20 +72,23 @@ async function diffTest(name, clip=defaultClipOpts) {
   return {numMismatch, numTotal};
 }
 
-async function preTestOne(name){
+async function preTestOne(name, browser, page){
   if(!tests[name]){ console.log('test doesnt exist'); return; }
 
   if(tests[name].clip){
-    return await diffTest(name, tests[name].clip);
+    return await diffTest(name, browser, page, tests[name].clip);
   } else {
-    return await diffTest(name);
+    return await diffTest(name, browser, page);
   }
 }
 
 async function logTestOne(name){
+  const browser = await puppeteer.launch(defaultBrowserOpts);
+  const page = await browser.newPage();
+
   console.log("Test [1/1]: " + chalk.bold.gray(name));
   process.stdout.write(" ===> ");
-  var {numMismatch, numTotal} = await preTestOne(name);
+  var {numMismatch, numTotal} = await preTestOne(name, browser, page);
   if(numMismatch){
     process.stdout.write(chalk.bold.red("FAILED"));
     process.stdout.write(": " + numMismatch + "/" + numTotal + " (" + ((numMismatch/numTotal) * 100).toFixed(2) + "%) pixels differ\n");
@@ -95,6 +96,8 @@ async function logTestOne(name){
     console.log(chalk.bold.green("PASSED"));
   }
   process.stdout.write("\n");
+
+  await browser.close();
 }
 
 async function logTestAll(){
@@ -102,10 +105,13 @@ async function logTestAll(){
       testsPassed = 0,
       testsTotal = Object.keys(tests).length;
 
+  const browser = await puppeteer.launch(defaultBrowserOpts);
+  const page = await browser.newPage();
+
   for(key in tests){
     console.log("Test [" + (++testCurr) + "/" + testsTotal + "]: " + chalk.bold.gray(key));
     process.stdout.write(" ===> ");
-    var {numMismatch, numTotal} = await preTestOne(key);
+    var {numMismatch, numTotal} = await preTestOne(key, browser, page);
     if(numMismatch){
       process.stdout.write(chalk.bold.red("FAILED"));
       process.stdout.write(": " + numMismatch + "/" + numTotal + " (" + ((numMismatch/numTotal) * 100).toFixed(2) + "%) pixels differ\n");
@@ -114,6 +120,8 @@ async function logTestAll(){
       testsPassed++;
     }
   }
+
+  await browser.close();
 
   console.log("Complete: [" + testsPassed + "/" + testsTotal + "] tests passed.\n");
 }

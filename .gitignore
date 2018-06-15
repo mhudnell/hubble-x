@@ -3,3 +3,4 @@
 
 /screenshots
 /report/dist
+*.DS_Store

@@ -1,0 +1,18 @@
+<h2><%=name%> test</h2>
+
+<div class="container-fluid">
+  <div class="row">
+    <% ['expected', 'actual', 'diff'].forEach(function(type) { %>
+      <div class="col-4">
+        <div class="thumbnail">
+          <a href='<%= "../../screenshots/"+type+"/" + name + ".png" %>'>
+            <img class="img-responsive" src='<%= "../../screenshots/" + type + "/" + name + ".png" %>' style="width:100%">
+            <div class="caption">
+              <p><%= type %></p>
+            </div>
+          </a>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>

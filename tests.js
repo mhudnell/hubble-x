@@ -5,7 +5,7 @@
 *   clip must be of format {x:?, y:?, width:?, height:?}
 */
 const tests = {
-  Accordion: {},
+  Accordion: { clip: {x:0, y:0, width:800, height:200} },
   AccordionGroup: { clip: {x:0, y:0, width:800, height:750} },
   Alert: {clip: {x:0, y:0, width:800, height:100}},
   Button: {clip: {x:0, y:0, width:500, height:100}},

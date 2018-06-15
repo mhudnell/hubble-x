@@ -19,6 +19,7 @@
     "ejs": "^2.6.1",
     "express": "^4.16.3",
     "pixelmatch": "^4.0.2",
-    "puppeteer": "^1.4.0"
+    "puppeteer": "^1.4.0",
+    "xmlbuilder": "^10.0.0"
   }
 }

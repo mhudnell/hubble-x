@@ -20,6 +20,7 @@
     "express": "^4.16.3",
     "pixelmatch": "^4.0.2",
     "puppeteer": "^1.4.0",
+    "xml2js": "^0.4.19",
     "xmlbuilder": "^10.0.0"
   }
 }

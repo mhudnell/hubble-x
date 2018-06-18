@@ -3,12 +3,16 @@
 const express = require('express'),
       app = express(),
       builder = require('xmlbuilder'),
+      xml2js = require('xml2js'),
       fs = require('fs'),
       PNG = require('pngjs').PNG,
       pixelmatch = require('pixelmatch'),
       puppeteer = require('puppeteer'),
       chalk = require('chalk');
 const tests = require('./tests.js');
+
+//dev
+const util = require('util');
 
 // declare 'global' (to this file) variables
 const defaultBrowserOpts = {
@@ -49,11 +53,11 @@ async function diffTest(name, clip=defaultClipOpts) {
   // create promises to tell us when pngs have loaded into imgExpected/imgActual
   let imgEpromise = new Promise((resolve, reject) => {
     imgExpected.on('parsed', () => resolve('successfully parsed'));
-    imgExpected.on('error', () => reject('nogood'));
+    imgExpected.on('error', () => reject('parse error'));
   }).catch(error => {console.log('caught', error.message)});
   let imgApromise = new Promise((resolve, reject) => {
     imgActual.on('parsed', () => resolve('successfully parsed'));
-    imgActual.on('error', () => reject('nogood'));
+    imgActual.on('error', () => reject('parse error'));
   }).catch(error => {console.log('caught', error.message)});
 
   let doneReading = async function() {
@@ -127,23 +131,45 @@ async function logTestAll(){
   return {testsPassed, testsTotal};
 }
 
-function buildXML(testsPassed, testsTotal) {
-  let xml = builder.create('vizregResults')
+function buildXML(testsPassed, testsTotal, testName=undefined) {
+  if(testsTotal == 1 & fs.existsSync(__dirname + '/screenshots/report.xml') & typeof testName !== 'undefined'){ // update existing xml
+    let numMismatch = testResults[testName];
+    let passed = numMismatch ? false : true;
+
+    var parser = new xml2js.Parser();
+
+    fs.readFile(__dirname + '/screenshots/report.xml', function(err, data) {
+        parser.parseString(data, function (err, result) {
+            if (err) throw err;
+
+            result['vizregResults'][testName][0]['$'] = {passed: passed, 'numMismatch': numMismatch};
+            let xml2jsBuilder = new xml2js.Builder();
+            let xmlString = xml2jsBuilder.buildObject(result);
+
+            fs.writeFile('screenshots/report.xml', xmlString, (err) => {  
+              if (err) throw err;
+            });
+        });
+    });
+  } else {  // write new xml
+    let xml = builder.create('vizregResults')
               .att("testsPassed", testsPassed)
               .att("testsFailed", testsTotal - testsPassed)
               .att("testsTotal", testsTotal);
 
-  for(test in testResults){
-    let numMismatch = testResults[test];
-    let passed = numMismatch ? false : true;
-    let ele = xml.ele(test, {'passed': passed, 'numMismatch': numMismatch});
+    for(test in testResults){
+      let numMismatch = testResults[test];
+      let passed = numMismatch ? false : true;
+      let ele = xml.ele(test, {'passed': passed, 'numMismatch': numMismatch});
+    }
+
+    let xmlString = xml.end({pretty: true});
+
+    fs.writeFile('screenshots/report.xml', xmlString, (err) => {  
+      if (err) throw err;
+    });
   }
-
-  let xmlString = xml.end({pretty: true});
-
-  fs.writeFile('screenshots/report.xml', xmlString, (err) => {  
-    if (err) throw err;
-  });
+  
 }
 
 
@@ -171,7 +197,7 @@ module.exports = async function(testName=undefined){
       testsPassedArg = oneTestPassed ? 1 : 0;
       testsTotalArg = 1;
     }
-    buildXML(testsPassedArg, testsTotalArg);
+    buildXML(testsPassedArg, testsTotalArg, testName);
 
     await browser.close();
     await server.close();

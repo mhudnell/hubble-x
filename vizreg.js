@@ -2,6 +2,7 @@
 
 const program = require('commander');
 const vizreg = require('./vizreg_lib.js');
+const report = require('./report/report.js');
 
 program
   .version('0.1.0')
@@ -15,6 +16,10 @@ program.parse(process.argv);
 
 if(typeof testVal === 'undefined') {
   vizreg();
+} else if(testVal == 'report'){
+  report.buildHTML();
+  report.openHTML();
 } else {
   vizreg(testName=testVal);
 }
+

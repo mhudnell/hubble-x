@@ -17,14 +17,16 @@
 
   <div class="container-fluid">
     <div class="row">
-      <div class="d-inline-block bg-light border-right shadow-lg pr-4 py-2" style="height:100vh"> <!-- col-4 col-md-2 -->
+      <div class="d-inline-block bg-light border-right shadow-lg pr-4 py-2" style="height:100vh">
         <ol>
           <% names.forEach(function(name) { %>
-            <li><a href='<%= name + ".html"%>'><%=name%></a></li> 
+            <% //console.log(name)%>
+            <% var bgclass = JSON.parse(report[name][0]['$']['passed']) ? "bg-success" : "bg-danger" %>
+            <li class="<%=bgclass%>" ><a href='<%= name + ".html"%>'><%=name%></a></li> 
           <% }) %>
         </ol>
       </div>
-      <div class="col"> <!-- col-8 col-md-10 -->
+      <div class="col">
         <%- body %>
       </div>
     </div>

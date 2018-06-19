@@ -1,3 +1,14 @@
-<div>
-  <h1>this is the index page!</h1>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <h2 class="mt-2 mb-3"><u>Report summary</u></h2>
+      <div class="border rounded">
+        <p>
+          Tests passed: <%=report['$']['testsPassed']%> <br />
+          Tests failed: <%=report['$']['testsFailed']%> <br />
+          Tests total: <%=report['$']['testsTotal']%>   <br />
+        </p>
+      </div>
+    </div>
+  </div>
 </div>

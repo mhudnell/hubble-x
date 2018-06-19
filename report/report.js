@@ -27,7 +27,7 @@ exports.buildHTML = function() {
     // console.log(util.inspect(xml, false, null));
 
     // create index.html
-    ejsRenderFile(__dirname + '/src/pages/index.ejs', {}).then((pageContent) => {
+    ejsRenderFile(__dirname + '/src/pages/index.ejs', {report: report}).then((pageContent) => {
       return ejsRenderFile(__dirname + '/src/layouts/layout.ejs', { body: pageContent, names: names, 
                                                                     report: report, octicons: octicons });
     })
@@ -39,7 +39,7 @@ exports.buildHTML = function() {
 
     // create html pages for all tests
     names.forEach((name) => {
-      ejsRenderFile(__dirname + '/src/pages/test.ejs', {name: name}).then((pageContent) => {
+      ejsRenderFile(__dirname + '/src/pages/test.ejs', {name: name, report: report}).then((pageContent) => {
         return ejsRenderFile(__dirname + '/src/layouts/layout.ejs', { body: pageContent, names: names, 
                                                                     report: report, octicons: octicons });
       })

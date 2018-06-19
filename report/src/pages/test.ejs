@@ -1,16 +1,29 @@
-<h2><%=name%> test</h2>
 
 <div class="container-fluid">
   <div class="row">
+    <div class="col">
+      <h2 class="mt-2 mb-3"><u><%=name%></u></h2>
+    </div>
+  </div>
+  <div class="row">
     <% ['expected', 'actual', 'diff'].forEach(function(type) { %>
       <div class="col-4">
-        <div class="thumbnail">
+        <!-- <div class="img-thumbnail">
           <a href='<%= "../../screenshots/"+type+"/" + name + ".png" %>'>
             <img class="img-responsive vr-screenshot" src='<%= "../../screenshots/" + type + "/" + name + ".png" %>'>
             <div class="caption">
               <p><%= type %></p>
             </div>
           </a>
+        </div> -->
+        <div class="card">
+          <a href='<%= "../../screenshots/"+type+"/" + name + ".png" %>'>
+            <img class="card-img-top" src="<%= "../../screenshots/" + type + "/" + name + ".png" %>" alt="<%= type %>">
+          </a>
+          <div class="card-body">
+            <h5 class="card-subtitle"><%= type %></p></h5>
+          </div>
+          
         </div>
       </div>
     <% }) %>

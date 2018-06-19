@@ -4,9 +4,12 @@
       <h2 class="mt-2 mb-3"><u>Report summary</u></h2>
       <div class="border rounded">
         <p>
-          Tests passed: <%=report['$']['testsPassed']%> <br />
-          Tests failed: <%=report['$']['testsFailed']%> <br />
-          Tests total: <%=report['$']['testsTotal']%>   <br />
+          <% var date = new Date(report['$']['timeCompleted']) %>
+          Date ran: <%=date.getMonth()+1%>/<%=date.getDate()%>/<%=date.getFullYear()%> <%=date.getHours()%>:<%=date.getMinutes()%>:<%=date.getSeconds()%> <br/>
+          <br/>
+          Tests passed: <%=report['$']['testsPassed']%> <br/>
+          Tests failed: <%=report['$']['testsFailed']%> <br/>
+          Tests total: <%=report['$']['testsTotal']%>   <br/>
         </p>
       </div>
     </div>

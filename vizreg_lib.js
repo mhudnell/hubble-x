@@ -103,7 +103,8 @@ async function logTestOne(name){
     passed = true;
     console.log(chalk.bold.green("PASSED"));
   }
-  process.stdout.write("\n");
+
+  console.log(chalk.bold("Complete") + ": test "+ (passed ? "passed" : "failed"));
 
   return passed;
 }
@@ -126,7 +127,8 @@ async function logTestAll(){
       testsPassed++;
     }
   }
-  console.log("Complete: [" + testsPassed + "/" + testsTotal + "] tests passed.\n");
+  
+  console.log(chalk.bold("Complete") + ": [" + testsPassed + "/" + testsTotal + "] tests passed");
 
   return {testsPassed, testsTotal};
 }
@@ -155,7 +157,8 @@ function buildXML(testsPassed, testsTotal, testName=undefined) {
     let xml = builder.create('vizregResults')
               .att("testsPassed", testsPassed)
               .att("testsFailed", testsTotal - testsPassed)
-              .att("testsTotal", testsTotal);
+              .att("testsTotal", testsTotal)
+              .att("timeCompleted", new Date());
 
     for(test in testResults){
       let numMismatch = testResults[test];
@@ -174,6 +177,8 @@ function buildXML(testsPassed, testsTotal, testName=undefined) {
 
 
 module.exports = async function(testName=undefined){
+  let startAll = process.hrtime();
+
   // start local client to render react components
   app.use(express.static('/Users/mhudnell/dev/viz_reg/client/build'));
   app.get('*', function (req, res) {
@@ -197,10 +202,13 @@ module.exports = async function(testName=undefined){
       testsPassedArg = oneTestPassed ? 1 : 0;
       testsTotalArg = 1;
     }
+    browser.close();
+    server.close();
+
     buildXML(testsPassedArg, testsTotalArg, testName);
 
-    await browser.close();
-    await server.close();
+    let timeTakenAll = process.hrtime(startAll);
+    console.log("Time taken: %d.%d seconds\n", timeTakenAll[0], Math.trunc(timeTakenAll[1]/1000000));
   })();
 }
 

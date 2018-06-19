@@ -7,24 +7,42 @@
 
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+  <!-- Octicons CSS -->
+  <link rel="stylesheet" href="../../node_modules/octicons/build/build.css">
+  <!-- vizreg CSS -->
+  <link rel="stylesheet" href="../src/css/vizreg.css">
 
   <title>vizreg</title>
 </head>
 <body>
   <section class="bg-primary text-light px-4 py-2">
-    <h1 ><a href="index.html" style="text-decoration: none; color: inherit;">vizreg results</a></h1>
+    <h1 ><a class="vr-header-link" href="index.html">vizreg results</a></h1>
   </section>
 
   <div class="container-fluid">
     <div class="row">
-      <div class="d-inline-block bg-light border-right shadow-lg pr-4 py-2" style="height:100vh">
+      <div class="d-inline-block bg-light border-right shadow-lg pr-4 py-2 vr-side-pane">
+
         <ol>
-          <% names.forEach(function(name) { %>
-            <% //console.log(name)%>
-            <% var bgclass = JSON.parse(report[name][0]['$']['passed']) ? "bg-success" : "bg-danger" %>
-            <li class="<%=bgclass%>" ><a href='<%= name + ".html"%>'><%=name%></a></li> 
-          <% }) %>
+          <div class="container-fluid">
+
+            <% names.forEach(function(name) { %>
+              <div class="row">
+                <div class="col">
+                  <li><a href='<%= name + ".html"%>'><%=name%></a></li>
+                </div>
+                <div class="d-inline-block">
+
+                  <%- JSON.parse(report[name][0]['$']['passed']) ? octicons.check.toSVG({ "class":"vr-passed" }) : octicons.x.toSVG({ "class":"vr-failed" }) %>
+
+                </div>
+              </div>
+            <% }) %>
+
+          </div>
+
         </ol>
+
       </div>
       <div class="col">
         <%- body %>

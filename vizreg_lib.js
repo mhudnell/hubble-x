@@ -29,7 +29,7 @@ const defaultClipOpts = {
 }
 let browser;
 let page;
-let testResults = {}; // used to store the numMismatch for each test
+let testResults = {}; // used to store the number of mismatched pixels for each test
 
 /*
 *   name: must refer to the end of the url of the page you want to test (e.g. localhost:4000/c/{name})

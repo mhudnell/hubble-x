@@ -1,0 +1,21 @@
+
+.vr-header-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.vr-side-pane {
+  height:100vh;
+}
+
+.vr-passed {
+  fill: green;
+}
+
+.vr-failed {
+  fill: red;
+}
+
+.vr-screenshot {
+  width:100%;
+}

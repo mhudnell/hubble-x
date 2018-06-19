@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const xml2js = require('xml2js');
 const xmlParseString = promisify(require('xml2js').parseString);
+const octicons = require("octicons");
 
 //dev
 // const util = require('util');
@@ -27,7 +28,8 @@ exports.buildHTML = function() {
 
     // create index.html
     ejsRenderFile(__dirname + '/src/pages/index.ejs', {}).then((pageContent) => {
-      return ejsRenderFile(__dirname + '/src/layouts/layout.ejs', {body: pageContent, names: names, report: report});
+      return ejsRenderFile(__dirname + '/src/layouts/layout.ejs', { body: pageContent, names: names, 
+                                                                    report: report, octicons: octicons });
     })
     .then((layoutContent) => {
       fs.writeFile(__dirname + '/dist/index.html', layoutContent, (err) => {  
@@ -38,7 +40,8 @@ exports.buildHTML = function() {
     // create html pages for all tests
     names.forEach((name) => {
       ejsRenderFile(__dirname + '/src/pages/test.ejs', {name: name}).then((pageContent) => {
-        return ejsRenderFile(__dirname + '/src/layouts/layout.ejs', {body: pageContent, names: names, report: report});
+        return ejsRenderFile(__dirname + '/src/layouts/layout.ejs', { body: pageContent, names: names, 
+                                                                    report: report, octicons: octicons });
       })
       .then((layoutContent) => {
         fs.writeFile(__dirname + '/dist/'+name+'.html', layoutContent, (err) => {  

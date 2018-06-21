@@ -1,17 +1,16 @@
 {
   "name": "vizreg",
   "version": "1.0.0",
-  "description": "",
-  "preferGlobal": true,
+  "description": "Visual regression tester for React components",
   "bin": {
-    "vizreg": "./vizreg.js"
+    "vizreg": "./cli.js"
   },
   "main": "start_script.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Max Hudnell <maxhudnell@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "chalk": "^2.4.1",

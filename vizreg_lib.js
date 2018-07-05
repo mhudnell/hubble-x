@@ -180,9 +180,9 @@ module.exports = async function(testName=undefined){
   let startAll = process.hrtime();
 
   // start local client to render react components
-  app.use(express.static('/Users/mhudnell/dev/viz_reg/client/build'));
+  app.use(express.static('/Users/mhudnell/dev/viz_reg/server/client/build'));
   app.get('*', function (req, res) {
-    res.sendFile('/Users/mhudnell/dev/viz_reg/client/build/index.html');
+    res.sendFile('/Users/mhudnell/dev/viz_reg/server/client/build/index.html');
   });
 
   // start server on port 4000

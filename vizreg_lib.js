@@ -9,7 +9,6 @@ const express = require('express'),
       pixelmatch = require('pixelmatch'),
       puppeteer = require('puppeteer'),
       chalk = require('chalk');
-const tests = require('./tests.js');
 
 //dev
 const util = require('util');
@@ -27,9 +26,20 @@ const defaultClipOpts = {
   width: 800,
   height: 600
 }
+let tests;
 let browser;
 let page;
 let testResults = {}; // used to store the number of mismatched pixels for each test
+
+async function getTestData() {
+  await page.goto('http://localhost:4000/testData.json');
+
+  tests = await page.evaluate(() =>  {
+    return JSON.parse(document.querySelector("body").innerText); 
+  });
+
+  return
+}
 
 /*
 *   name: must refer to the end of the url of the page you want to test (e.g. localhost:4000/c/{name})
@@ -191,6 +201,8 @@ module.exports = async function(testName=undefined){
   (async () => {
     browser = await puppeteer.launch(defaultBrowserOpts);
     page = await browser.newPage();
+
+    await getTestData();
 
     let testsPassedArg; let testsTotalArg;
     if(typeof testName === 'undefined') { // run every test

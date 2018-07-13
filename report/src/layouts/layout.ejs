@@ -8,16 +8,16 @@
 
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
-  <!-- Octicons CSS --> <!-- (all paths are relative to the dist directory) -->
-  <link rel="stylesheet" href="../../node_modules/octicons/build/build.css">
+  <!-- Octicons CSS --> <!-- (all paths are relative to the report directory) -->
+  <link rel="stylesheet" href='<%= dirname + "/../node_modules/octicons/build/build.css" %>'>
   <!-- vizreg CSS -->
-  <link rel="stylesheet" href="../src/css/vizreg.css">
+  <link rel="stylesheet" href='<%= dirname + "/src/css/vizreg.css" %>'>
 
   <title>vizreg</title>
 </head>
 <body>
   <section class="bg-primary text-light px-4 py-2">
-    <h1 ><a class="vr-header-link" href="index.html">vizreg report</a></h1>
+    <h1 ><a class="vr-header-link" href='<%= dirname + "/dist/index.html" %>'>vizreg report</a></h1>
   </section>
 
   <div class="container-fluid">
@@ -27,18 +27,27 @@
         <ol>
           <div class="container-fluid">
 
-            <% names.forEach(function(name) { %>
-              <div class="row">
-                <div class="col">
-                  <li><a href='<%= name + ".html"%>'><%=name%></a></li>
-                </div>
-                <div class="d-inline-block">
+            <%  let groupList = report['Group'];
+                for(let groupIndex in groupList){
+                  let group = groupList[groupIndex];
+                  let groupName = group['$']['name'];
+                  let testList = group['Test'];
+                  for(let testIndex in testList){
+                    let test = testList[testIndex];
+                    let testName = test['$']['name'];
+            %>
+                      <div class="row">
+                        <div class="col">
+                          <li><a href='<%= dirname + '/dist/' + groupName + '/' + testName + ".html"%>'><%=groupName + "::" + testName%></a></li>
+                        </div>
+                        <div class="d-inline-block">
 
-                  <%- JSON.parse(report[name][0]['$']['passed']) ? octicons.check.toSVG({ "class":"vr-passed" }) : octicons.x.toSVG({ "class":"vr-failed" }) %>
+                          <%- JSON.parse(test['$']['passed']) ? octicons.check.toSVG({ "class":"vr-passed" }) : octicons.x.toSVG({ "class":"vr-failed" }) %>
 
-                </div>
-              </div>
-            <% }) %>
+                        </div>
+                      </div>
+
+            <% }} %>
 
           </div>
 

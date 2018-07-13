@@ -2,15 +2,15 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col">
-      <h2 class="mt-2 mb-3"><u><%=name%></u></h2>
+      <h2 class="mt-2 mb-3"><u><%=groupName + "::" + testName%></u></h2>
     </div>
   </div>
   <div class="row">
     <% ['expected', 'actual', 'diff'].forEach(function(type) { %>
       <div class="col-4">
         <div class="card">
-          <a href='<%= "../../screenshots/"+type+"/" + name + ".png" %>'>
-            <img class="card-img-top" src="<%= "../../screenshots/" + type + "/" + name + ".png" %>" alt="<%= type %>">
+          <a href='<%= dirname + "/../screenshots/" + type + "/" + groupName +  "_" + testName + ".png" %>'>
+            <img class="card-img-top" src="<%= dirname + "/../screenshots/" + type + "/" + groupName +  "_" + testName + ".png" %>" alt="<%= type %>">
           </a>
           <div class="card-body">
             <h5 class="card-subtitle"><%= type %></p></h5>
@@ -23,7 +23,7 @@
     <div class="col">
       <div class="border rounded">
         <p>
-          Number of mismatched pixels: <%= report[name][0]['$']['numMismatch'] %>
+          Number of mismatched pixels: <%= test['$']['numMismatch'] %>
         </p>
       </div>
     </div>

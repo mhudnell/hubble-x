@@ -178,14 +178,14 @@ function buildXML(testsPassed, testsTotal, testName=undefined) {
 
     for(let i = 0; i < testData.groups.length; i++){
       let group = testData.groups[i];
-      let xmlGroup = xmlRoot.ele(group.groupName);
+      let xmlGroup = xmlRoot.ele("Group", {'name': group.groupName});
       let numPassed = 0;
       for(let j = 0; j < group.tests.length; j++){
         let test = group.tests[j];
         let numMismatch = test.numMismatch;
         let passed = numMismatch ? false : true;
         numPassed = passed ? numPassed + 1 : numPassed;
-        xmlGroup.ele(test.testName, {'passed': passed, 'numMismatch': numMismatch});
+        xmlGroup.ele("Test", {'name': test.testName, 'passed': passed, 'numMismatch': numMismatch});
       }
       xmlGroup.att('numPassed', numPassed)
               .att('numTests', group.tests.length);

@@ -5,14 +5,12 @@
   "bin": {
     "vizreg": "./cli.js"
   },
-  "main": "start_script.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "main": "./dist/client_api-compiled.js",
   "keywords": [],
   "author": "Max Hudnell <maxhudnell@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "async": "^2.6.1",
     "chalk": "^2.4.1",
     "commander": "^2.15.1",
     "ejs": "^2.6.1",
@@ -20,7 +18,16 @@
     "octicons": "^7.3.0",
     "pixelmatch": "^4.0.2",
     "puppeteer": "^1.4.0",
+    "viz_client": "file:viz_client-0.1.0.tgz",
     "xml2js": "^0.4.19",
     "xmlbuilder": "^10.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-preset-react-app": "^3.1.2",
+    "file-loader": "^1.1.11",
+    "webpack": "^4.12.1",
+    "webpack-node-externals": "^1.7.2"
   }
 }

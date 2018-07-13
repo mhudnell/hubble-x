@@ -25,8 +25,12 @@ const defaultClipOpts = {
   y: 0,
   width: 800,
   height: 600
-}
-let tests;
+};
+const screenshotDir = __dirname + '/screenshots/';
+const expectedDir = screenshotDir + 'expected/';
+const actualDir = screenshotDir + 'actual/';
+const diffDir = screenshotDir + 'diff/';
+let testData;
 let browser;
 let page;
 let testResults = {}; // used to store the number of mismatched pixels for each test
@@ -34,7 +38,7 @@ let testResults = {}; // used to store the number of mismatched pixels for each 
 async function getTestData() {
   await page.goto('http://localhost:4000/testData.json');
 
-  tests = await page.evaluate(() =>  {
+  testData = await page.evaluate(() =>  {
     return JSON.parse(document.querySelector("body").innerText); 
   });
 
@@ -44,21 +48,21 @@ async function getTestData() {
 /*
 *   name: must refer to the end of the url of the page you want to test (e.g. localhost:4000/c/{name})
 */
-async function diffTest(name, clip=defaultClipOpts) {
-
-  await page.goto('http://localhost:4000/c/' + name);
+async function diffTest(groupName, testName, clip=defaultClipOpts) {
+  checkDirsExist();
+  await page.goto('http://localhost:4000/' + groupName + '/' + testName);
 
   // check if expected png exists, create it if not
-  if(!fs.existsSync('screenshots/expected/' + name + '.png')) {
-    await page.screenshot({ path: 'screenshots/expected/' + name + '.png',
+  if(!fs.existsSync(expectedDir + groupName + '_' + testName + '.png')) {
+    await page.screenshot({ path: expectedDir + groupName + '_' + testName + '.png',
                             clip: clip });
   }
-  await page.screenshot({ path: 'screenshots/actual/' + name + '.png',
+  await page.screenshot({ path: actualDir + groupName + '_' + testName + '.png',
                           clip: clip });
 
   // load pngs into variables
-  let imgExpected = fs.createReadStream('screenshots/expected/' + name + '.png').pipe(new PNG()),
-      imgActual = fs.createReadStream('screenshots/actual/' + name + '.png').pipe(new PNG());
+  let imgExpected = fs.createReadStream(expectedDir + groupName + '_' + testName + '.png').pipe(new PNG()),
+      imgActual = fs.createReadStream(actualDir + groupName + '_' + testName + '.png').pipe(new PNG());
 
   // create promises to tell us when pngs have loaded into imgExpected/imgActual
   let imgEpromise = new Promise((resolve, reject) => {
@@ -78,7 +82,7 @@ async function diffTest(name, clip=defaultClipOpts) {
 
     let numMismatch = pixelmatch(imgExpected.data, imgActual.data, diff.data, imgExpected.width, imgExpected.height, {threshold: 0.1});
 
-    diff.pack().pipe(fs.createWriteStream('screenshots/diff/' + name + '.png'));
+    diff.pack().pipe(fs.createWriteStream(diffDir + groupName + '_' + testName + '.png'));
     return numMismatch;
   };
 
@@ -88,53 +92,55 @@ async function diffTest(name, clip=defaultClipOpts) {
   return {numMismatch, numTotal};
 }
 
-async function testOne(name){
-  if(!tests[name]){ console.log('test doesnt exist'); return; }
-
-  if(tests[name].clip){
-    return await diffTest(name, tests[name].clip);
+async function testOne(groupName, test){
+  if(test.clip){
+    return await diffTest(groupName, test.testName, test.clip);
   } else {
-    return await diffTest(name);
+    return await diffTest(groupName, test.testName);
   }
 }
 
-async function logTestOne(name){
-  let passed;
+// async function logTestOne(name){
+//   let passed;
 
-  console.log("Test [1/1]: " + chalk.bold.gray(name));
-  process.stdout.write(" ===> ");
-  let {numMismatch, numTotal} = await testOne(name);
-  testResults[name] = numMismatch;
-  if(numMismatch){
-    passed = false;
-    process.stdout.write(chalk.bold.red("FAILED"));
-    process.stdout.write(": " + numMismatch + "/" + numTotal + " (" + ((numMismatch/numTotal) * 100).toFixed(2) + "%) pixels differ\n");
-  } else {
-    passed = true;
-    console.log(chalk.bold.green("PASSED"));
-  }
+//   console.log("Test [1/1]: " + chalk.bold.gray(name));
+//   process.stdout.write(" ===> ");
+//   let {numMismatch, numTotal} = await testOne(name);
+//   testResults[name] = numMismatch;
+//   if(numMismatch){
+//     passed = false;
+//     process.stdout.write(chalk.bold.red("FAILED"));
+//     process.stdout.write(": " + numMismatch + "/" + numTotal + " (" + ((numMismatch/numTotal) * 100).toFixed(2) + "%) pixels differ\n");
+//   } else {
+//     passed = true;
+//     console.log(chalk.bold.green("PASSED"));
+//   }
 
-  console.log(chalk.bold("Complete") + ": test "+ (passed ? "passed" : "failed"));
+//   console.log(chalk.bold("Complete") + ": test "+ (passed ? "passed" : "failed"));
 
-  return passed;
-}
+//   return passed;
+// }
 
 async function logTestAll(){
   let testCurr = 0,
       testsPassed = 0,
-      testsTotal = Object.keys(tests).length;
+      testsTotal = testData.numTotalTests;
 
-  for(key in tests){
-    console.log("Test [" + (++testCurr) + "/" + testsTotal + "]: " + chalk.bold.gray(key));
-    process.stdout.write(" ===> ");
-    let {numMismatch, numTotal} = await testOne(key);
-    testResults[key] = numMismatch;
-    if(numMismatch){
-      process.stdout.write(chalk.bold.red("FAILED"));
-      process.stdout.write(": " + numMismatch + "/" + numTotal + " (" + ((numMismatch/numTotal) * 100).toFixed(2) + "%) pixels differ\n");
-    } else {
-      console.log(chalk.bold.green("PASSED"));
-      testsPassed++;
+  for(let i = 0; i < testData.groups.length; i++){
+    let group = testData.groups[i];
+    for(let j = 0; j < group.tests.length; j++){
+      let test = group.tests[j];
+      console.log("Test [" + (++testCurr) + "/" + testsTotal + "]: " + group.groupName + "::" + chalk.bold.gray(test.testName));
+      process.stdout.write(" ===> ");
+      let {numMismatch, numTotal} = await testOne(group.groupName, test);
+      test.numMismatch = numMismatch;
+      if(numMismatch){
+        process.stdout.write(chalk.bold.red("FAILED"));
+        process.stdout.write(": " + numMismatch + "/" + numTotal + " (" + ((numMismatch/numTotal) * 100).toFixed(2) + "%) pixels differ\n");
+      } else {
+        console.log(chalk.bold.green("PASSED"));
+        testsPassed++;
+      }
     }
   }
   
@@ -144,13 +150,13 @@ async function logTestAll(){
 }
 
 function buildXML(testsPassed, testsTotal, testName=undefined) {
-  if(testsTotal == 1 & fs.existsSync(__dirname + '/screenshots/report.xml') & typeof testName !== 'undefined'){ // update existing xml
+  if(testsTotal == 1 & fs.existsSync(screenshotDir + 'report.xml') & typeof testName !== 'undefined'){ // update existing xml for one test
     let numMismatch = testResults[testName];
     let passed = numMismatch ? false : true;
 
     var parser = new xml2js.Parser();
 
-    fs.readFile(__dirname + '/screenshots/report.xml', function(err, data) {
+    fs.readFile(screenshotDir + 'report.xml', function(err, data) {
         parser.parseString(data, function (err, result) {
             if (err) throw err;
 
@@ -158,33 +164,55 @@ function buildXML(testsPassed, testsTotal, testName=undefined) {
             let xml2jsBuilder = new xml2js.Builder();
             let xmlString = xml2jsBuilder.buildObject(result);
 
-            fs.writeFile('screenshots/report.xml', xmlString, (err) => {  
+            fs.writeFile(screenshotDir + 'report.xml', xmlString, (err) => {  
               if (err) throw err;
             });
         });
     });
-  } else {  // write new xml
-    let xml = builder.create('vizregResults')
+  } else {  // write new xml for all tests
+    let xmlRoot = builder.create('vizregResults')
               .att("testsPassed", testsPassed)
               .att("testsFailed", testsTotal - testsPassed)
               .att("testsTotal", testsTotal)
               .att("timeCompleted", new Date());
 
-    for(test in testResults){
-      let numMismatch = testResults[test];
-      let passed = numMismatch ? false : true;
-      let ele = xml.ele(test, {'passed': passed, 'numMismatch': numMismatch});
+    for(let i = 0; i < testData.groups.length; i++){
+      let group = testData.groups[i];
+      let xmlGroup = xmlRoot.ele(group.groupName);
+      let numPassed = 0;
+      for(let j = 0; j < group.tests.length; j++){
+        let test = group.tests[j];
+        let numMismatch = test.numMismatch;
+        let passed = numMismatch ? false : true;
+        numPassed = passed ? numPassed + 1 : numPassed;
+        xmlGroup.ele(test.testName, {'passed': passed, 'numMismatch': numMismatch});
+      }
+      xmlGroup.att('numPassed', numPassed)
+              .att('numTests', group.tests.length);
     }
 
-    let xmlString = xml.end({pretty: true});
+    let xmlString = xmlRoot.end({pretty: true});
 
-    fs.writeFile('screenshots/report.xml', xmlString, (err) => {  
+    fs.writeFile(screenshotDir + 'report.xml', xmlString, (err) => {  
       if (err) throw err;
     });
   }
-  
 }
 
+function checkDirsExist() {
+  if(!fs.existsSync(screenshotDir)){
+    fs.mkdirSync(screenshotDir);
+  }
+  if(!fs.existsSync(expectedDir)){
+    fs.mkdirSync(expectedDir);
+  }
+  if(!fs.existsSync(actualDir)){
+    fs.mkdirSync(actualDir);
+  }
+  if(!fs.existsSync(diffDir)){
+    fs.mkdirSync(diffDir);
+  }
+}
 
 module.exports = async function(testName=undefined){
   let startAll = process.hrtime();

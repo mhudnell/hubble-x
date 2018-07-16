@@ -10,8 +10,9 @@ const express = require('express'),
       puppeteer = require('puppeteer'),
       chalk = require('chalk');
 
+const buildAndServe = require('viz_client');
 //dev
-const util = require('util');
+// const util = require('util');
 
 // declare 'global' (to this file) variables
 const defaultBrowserOpts = {
@@ -215,16 +216,9 @@ function checkDirsExist() {
 }
 
 module.exports = async function(testName=undefined){
-  let startAll = process.hrtime();
+  let startTimeAll = process.hrtime();
 
-  // start local client to render react components
-  app.use(express.static('/Users/mhudnell/dev/viz_reg/client/build')); //'/Users/mhudnell/dev/viz_reg/server/node_modules/viz_client/build'
-  app.get('*', function (req, res) {
-    res.sendFile('/Users/mhudnell/dev/viz_reg/client/build/index.html'); //'/Users/mhudnell/dev/viz_reg/server/node_modules/viz_client/build/index.html'
-  });
-
-  // start server on port 4000
-  let server = app.listen(4000);
+  let server = await buildAndServe();
 
   (async () => {
     browser = await puppeteer.launch(defaultBrowserOpts);
@@ -247,8 +241,8 @@ module.exports = async function(testName=undefined){
 
     buildXML(testsPassedArg, testsTotalArg, testName);
 
-    let timeTakenAll = process.hrtime(startAll);
-    console.log("Time taken: %d.%d seconds\n", timeTakenAll[0], Math.trunc(timeTakenAll[1]/1000000));
+    let endTimeAll = process.hrtime(startTimeAll);
+    console.log("Time taken: %d.%d seconds\n", endTimeAll[0], Math.trunc(endTimeAll[1]/1000000));
   })();
 }
 

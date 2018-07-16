@@ -77,7 +77,6 @@ var TestStore = function () {
       toReturn.groups = allGroups;
       toReturn.numGroups = numGroups;
       toReturn.numTotalTests = numTotalTests;
-      console.log("getTests", toReturn);
 
       return toReturn;
     }

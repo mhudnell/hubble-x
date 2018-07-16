@@ -18,7 +18,7 @@
     "octicons": "^7.3.0",
     "pixelmatch": "^4.0.2",
     "puppeteer": "^1.4.0",
-    "viz_client": "file:viz_client-0.1.0.tgz",
+    "viz_client": "file:viz_client-0.2.0.tgz",
     "xml2js": "^0.4.19",
     "xmlbuilder": "^10.0.0"
   },

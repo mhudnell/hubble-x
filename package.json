@@ -1,11 +1,11 @@
 {
   "name": "vizreg",
   "version": "0.2.0",
-  "description": "Visual regression tester for React components",
+  "description": "A visual regression testing tool for React components",
   "bin": {
-    "vizreg": "./cli.js"
+    "vizreg": "lib/cli.js"
   },
-  "main": "./dist/client_api-compiled.js",
+  "main": "lib/dist/client_api-compiled.js",
   "keywords": [],
   "author": "Max Hudnell <maxhudnell@gmail.com>",
   "license": "ISC",

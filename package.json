@@ -29,5 +29,8 @@
     "file-loader": "^1.1.11",
     "webpack": "^4.12.1",
     "webpack-node-externals": "^1.7.2"
+  },
+  "babel": {
+    "presets": ["env", "react"]
   }
 }

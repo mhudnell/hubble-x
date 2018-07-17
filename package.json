@@ -1,9 +1,9 @@
 {
-  "name": "vizreg",
-  "version": "0.2.0",
+  "name": "hubble-x",
+  "version": "0.2.10",
   "description": "A visual regression testing tool for React components",
   "bin": {
-    "vizreg": "lib/cli.js"
+    "hubble": "lib/cli.js"
   },
   "main": "lib/dist/client_api-compiled.js",
   "keywords": [],
@@ -15,10 +15,10 @@
     "commander": "^2.15.1",
     "ejs": "^2.6.1",
     "express": "^4.16.3",
+    "hubble-x-client": "file:hubble-x-client-0.2.10.tgz",
     "octicons": "^7.3.0",
     "pixelmatch": "^4.0.2",
     "puppeteer": "^1.4.0",
-    "viz_client": "file:viz_client-0.2.0.tgz",
     "xml2js": "^0.4.19",
     "xmlbuilder": "^10.0.0"
   },
@@ -31,6 +31,9 @@
     "webpack-node-externals": "^1.7.2"
   },
   "babel": {
-    "presets": ["env", "react"]
+    "presets": [
+      "env",
+      "react"
+    ]
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "hubble-x",
-  "version": "0.2.10",
+  "version": "0.3.0",
   "description": "A visual regression testing tool for React components",
   "bin": {
     "hubble": "lib/cli.js"

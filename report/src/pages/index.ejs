@@ -5,7 +5,13 @@
       <div class="border rounded">
         <p>
           <% var date = new Date(report['$']['timeCompleted']) %>
-          Date ran: <%=date.getMonth()+1%>/<%=date.getDate()%>/<%=date.getFullYear()%> <%=date.getHours()%>:<%=date.getMinutes()%>:<%=date.getSeconds()%> <br/>
+          Time ran: <%=date.getMonth()+1%>/<%=date.getDate()%>/<%=date.getFullYear()%> <%=date.getHours()%>:<%=date.getMinutes()%>:<%=date.getSeconds()%> <br/>
+
+          <% if(report['$']['timeUpdated']){ %>
+            <% var dateUpdated = new Date(report['$']['timeUpdated']); %>
+            Time updated: <%=dateUpdated.getMonth()+1%>/<%=dateUpdated.getDate()%>/<%=dateUpdated.getFullYear()%> <%=dateUpdated.getHours()%>:<%=dateUpdated.getMinutes()%>:<%=dateUpdated.getSeconds()%> <br/>
+          <% } %>
+
           <br/>
           Tests passed: <%=report['$']['testsPassed']%> <br/>
           Tests failed: <%=report['$']['testsFailed']%> <br/>

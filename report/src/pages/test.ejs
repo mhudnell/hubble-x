@@ -23,6 +23,9 @@
     <div class="col">
       <div class="border rounded">
         <p>
+          <% var date = new Date(test['$']['timeCompleted']) %>
+          Time ran: <%=date.getMonth()+1%>/<%=date.getDate()%>/<%=date.getFullYear()%> <%=date.getHours()%>:<%=date.getMinutes()%>:<%=date.getSeconds()%> <br/>
+          <br/>
           Number of mismatched pixels: <%= test['$']['numMismatch'] %>
         </p>
       </div>

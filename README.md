@@ -14,7 +14,7 @@ Create a folder named `viz-tests` in the root of your React app. This is where y
 ```
 your-react-app/
 ├── node_modules/
-│   └── vizreg/
+│   └── hubble-x/
 └── viz-tests/
     └── your-tests.test.js
 ```

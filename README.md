@@ -10,12 +10,12 @@ A visual regression testing tool for React components
 `npm i hubble-x --save-dev`
 
 ## Usage
-Create a folder named `viz-tests` in the root of your React app. This is where you will keep your tests. Make sure your tests end with the `.test.js` extension. Example repository structure:
+Create a folder named `hubble-tests` in the root of your React app. This is where you will keep your tests. Make sure your tests end with the `.test.js` extension. Example repository structure:
 ```
 your-react-app/
 ├── node_modules/
 │   └── hubble-x/
-└── viz-tests/
+└── hubble-tests/
     └── your-tests.test.js
 ```
 

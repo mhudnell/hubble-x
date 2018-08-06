@@ -64,7 +64,11 @@ View the report: `$    npx hubble report`
 
 Run all tests: `$    npx hubble`
 
-Update the "expected" image for all tests: `$    npx hubble --update`
+Run a group of tests: `$    npx hubble GroupName`
+
+Run a single test: `$    npx hubble GroupName/TestName`
+
+Update the "expected" image for tests: `$    npx hubble --update`
 
 View HTML report: `$    npx hubble report`
 

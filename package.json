@@ -2,6 +2,10 @@
   "name": "hubble-x",
   "version": "0.3.2",
   "description": "A visual regression testing tool for React components",
+  "repository": {
+    "type": "git",
+    "url": "github:mhudnell/hubble-x"
+  },
   "bin": {
     "hubble": "lib/cli.js"
   },

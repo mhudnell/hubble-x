@@ -15,7 +15,7 @@
     "commander": "^2.15.1",
     "ejs": "^2.6.1",
     "express": "^4.16.3",
-    "hubble-x-client": "file:hubble-x-client-0.2.10.tgz",
+    "hubble-x-client": "github:mhudnell/hubble-x-client#semver:0.3.1",
     "octicons": "^7.3.0",
     "pixelmatch": "^4.0.2",
     "puppeteer": "^1.4.0",

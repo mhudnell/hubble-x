@@ -1,6 +1,6 @@
 {
   "name": "hubble-x",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "A visual regression testing tool for React components",
   "repository": {
     "type": "git",
@@ -10,7 +10,16 @@
     "hubble": "lib/cli.js"
   },
   "main": "lib/dist/client_api-compiled.js",
-  "keywords": ["visual", "regression", "react", "reactjs", "component", "test", "testing", "screenshot"],
+  "keywords": [
+    "visual",
+    "regression",
+    "react",
+    "reactjs",
+    "component",
+    "test",
+    "testing",
+    "screenshot"
+  ],
   "author": "Max Hudnell <maxhudnell@gmail.com>",
   "license": "ISC",
   "dependencies": {

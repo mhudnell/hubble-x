@@ -45,6 +45,18 @@ Run your tests: `$    npx hubble`
 
 View the report: `$    npx hubble report`
 
+## Screenshots
+
+Terminal output:
+
+![presi_gif](https://user-images.githubusercontent.com/12748650/43844566-0dac7e2c-9af8-11e8-9237-38453564899e.gif)
+
+HTML report:
+
+<img src="https://user-images.githubusercontent.com/12748650/43844680-52358098-9af8-11e8-9c8d-0f6154e5f1e3.png" width="400" ></img>
+<img src="https://user-images.githubusercontent.com/12748650/43844702-59ca3e98-9af8-11e8-966a-ea8df8bae9f4.png" width="400" ></img>
+
+
 ## API
 
 **.testGroup(groupName)**

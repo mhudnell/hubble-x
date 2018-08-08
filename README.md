@@ -3,8 +3,10 @@ A visual regression testing tool for React components
 
 * [Installation](#installation)
 * [Usage](#usage)
+* [Screenshots](#screenshots)
 * [API](#api)
 * [CLI](#cli)
+* [License](#License)
 
 ## Installation
 `npm i hubble-x --save-dev`

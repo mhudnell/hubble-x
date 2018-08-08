@@ -10,7 +10,7 @@
     "hubble": "lib/cli.js"
   },
   "main": "lib/dist/client_api-compiled.js",
-  "keywords": [],
+  "keywords": ["visual", "regression", "react", "reactjs", "component", "test", "testing", "screenshot"],
   "author": "Max Hudnell <maxhudnell@gmail.com>",
   "license": "ISC",
   "dependencies": {

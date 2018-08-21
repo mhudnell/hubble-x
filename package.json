@@ -1,6 +1,6 @@
 {
   "name": "hubble-x",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "A visual regression testing tool for React components",
   "repository": {
     "type": "git",

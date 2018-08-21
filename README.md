@@ -86,6 +86,3 @@ Update the "expected" image for tests: `$    npx hubble --update`
 
 View HTML report: `$    npx hubble report`
 
-## License
-
-The source of this library is licensed under the MIT license
